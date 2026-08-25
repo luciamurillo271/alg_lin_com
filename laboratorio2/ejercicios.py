@@ -140,11 +140,15 @@ Verificar que la función desarrollada matricesIguales(A, L@U) devuelva
 True.'''
 def matricesIguales(A, B):
     iguales = True
+    f,c = A.shape
     if len(A) != len(B) or len(A[0]) != len(B[0]):
         iguales = False
     else:
-        iguales =A.all() == B.all()
-        #for i in range(len(A)):
+        i = 0
+        while iguales and i < f:
+            for j in range(c):
+                iguales = iguales and A[i][j] == B[i][j]
+            i += 1
     return iguales
 
 A = np.array([[4,2,1],[2,7,9],[0,5,22/3]])
@@ -174,6 +178,10 @@ def traspuesta(A):
 
 def esSimetrica(A):
     if esCuadrada(A):
+        T = traspuesta(A)
+        return A.all() == T.all()
+'''def esSimetrica(A):
+    if esCuadrada(A):
         f,c = A.shape
         T = traspuesta(A)
         simetrica = True
@@ -183,7 +191,7 @@ def esSimetrica(A):
                 simetrica = A[i,j] == T[i,j]
             i += 1
         
-        return simetrica
+        return simetrica'''
 
 A = np.array(np.random.rand(4,4))
 print(esSimetrica(A.T@A))
