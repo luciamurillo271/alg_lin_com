@@ -4,7 +4,7 @@ def error(x,y):
 '''Recibe dos numeros x e y, y calcula el error de aproximar x usando y en float64'''
 
 def error_relativo(x,y):
-    return
+    return abs(np.float64(error(x,y))) / np.float64(x)
 '''Recibe dos numeros x e y, y calcula el error relativo de aproximar x usando y en float64'''
     
 def matricesIguales(A, B):
@@ -16,7 +16,7 @@ def matricesIguales(A, B):
         i = 0
         while iguales and i < f:
             for j in range(c):
-                iguales = iguales and A[i][j] == B[i][j]
+                iguales = iguales and error(A[i][j], B[i][j]) <= 10**-8
             i += 1
     return iguales
 '''Devuelve True si ambas matrices son iguales y False en otro caso. Considerar que las matrices pueden tener distintas dimensiones, ademas de distintos valores.'''
