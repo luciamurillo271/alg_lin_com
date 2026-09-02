@@ -1,7 +1,40 @@
 
 import numpy as np
-from lab2 import rota, escala, rota_y_escala, afin, trans_afin
+#from lab2 import rota, escala, rota_y_escala, afin, trans_afin
 
+def rota(theta):
+    a = np.cos(theta)
+    b = np.sin(theta)
+    A = np.array([[a,-b],[b,a]])
+    return A
+
+def escala(s):
+    A = np.zeros((len(s),len(s)))
+    for i in range(len(s)):
+        A[i][i] = s[i]
+    return A
+
+def rota_y_escala(theta,s):
+    T2 = escala(s)
+    T1 = rota(theta)
+    return T2 @ T1
+
+def afin(theta,s,b):
+    T2 = escala(s)
+    T1 = rota(theta)
+    A = T2@T1
+    B = np.zeros((3,3))
+    for i in range(2):
+        B[i][:2] = A[i]
+        B[i][2] = b[i]
+    B[2][2] = 1
+    return B
+
+def trans_afin(v,theta,s,b):
+    A = afin(theta,s,b)
+    v1 = np.array([v[0],v[1],1])
+    w = A@v1
+    return w[:2]
 
 # --- Tests extraídos del enunciado ---
 
