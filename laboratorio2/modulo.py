@@ -16,7 +16,7 @@ def matricesIguales(A, B):
         i = 0
         while iguales and i < f:
             for j in range(c):
-                iguales = iguales and error(A[i][j], B[i][j]) <= 10**-8
+                iguales = iguales and np.isclose(A[i][j], B[i][j])
             i += 1
     return iguales
 '''Devuelve True si ambas matrices son iguales y False en otro caso. Considerar que las matrices pueden tener distintas dimensiones, ademas de distintos valores.'''
