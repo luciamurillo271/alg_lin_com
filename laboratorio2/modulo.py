@@ -1,10 +1,10 @@
 import numpy as np
 def error(x,y):
-    return np.float64(x) - np.float64(y)
+    return abs(np.float64(x) - np.float64(y))
 '''Recibe dos numeros x e y, y calcula el error de aproximar x usando y en float64'''
 
 def error_relativo(x,y):
-    return abs(np.float64(error(x,y))) / np.float64(x)
+    return abs(error(x,y)) / abs(np.float64(x))
 '''Recibe dos numeros x e y, y calcula el error relativo de aproximar x usando y en float64'''
     
 def matricesIguales(A, B):

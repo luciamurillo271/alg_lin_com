@@ -38,15 +38,14 @@ def vistform(T, wz, titulo=''):
 
     bump = [np.max(((maxlim[0] - minlim[0]) * 0.05, 0.1)),
             np.max(((maxlim[1] - minlim[1]) * 0.05, 0.1))]
-    limits = [[minlim[0]-bump[0], maxlim[0]+bump[0]], [minlim[1]-bump[1], maxlim[1]+bump[1]]]             
+    limits = [[minlim[0]-bump[0], maxlim[0]+bump[0]],
+               [minlim[1]-bump[1], maxlim[1]+bump[1]]]             
 
     fig, (ax1, ax2) = plt.subplots(1, 2)         
     fig.suptitle(titulo)
     grid_plot(ax1, wz, limits, 'w', 'z')    
     grid_plot(ax2, xy, limits, 'x', 'y')    
-
-
-
+    
 def grid_plot(ax, ab, limits, a_label, b_label):
     ax.plot(ab[0,:], ab[1,:], '.')
     ax.set(aspect='equal',
