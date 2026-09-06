@@ -18,13 +18,13 @@ def triangSup(A):
 
 def triangInf(A):
     if esCuadrada(A):
-            L = np.copy(A)
-            f, c = L.shape
-            i = 0
-            while i < f:
-                L[:i+1,i:] = 0
-                i+= 1
-            return L
+        L = np.copy(A)
+        f, c = L.shape
+        i = 0
+        while i < f:
+            L[:i+1,i:] = 0
+            i+= 1
+        return L
 
 
 def diagonal(A):
