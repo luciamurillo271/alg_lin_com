@@ -57,7 +57,7 @@ def es_inferior(A):
     return inferior
 
 
-def res_tri(L,b,inferior=True):
+def res_tri2(L,b,inferior=True):
     x = np.zeros(len(L))
     for i in range(len(L)):
         sum = 0
@@ -67,7 +67,7 @@ def res_tri(L,b,inferior=True):
         
     return x
 
-def res_tri2(L,b,inferior=True):
+def res_tri(L,b,inferior=True):
     x = np.zeros(len(L))
     if not inferior:
         for i in range(len(L)-1,-1,-1):
@@ -83,6 +83,89 @@ def res_tri2(L,b,inferior=True):
         x[i] = (b[i] - sum)/L[i][i]
         
     return x
+
+
+def inversa(A):
+    L, U, nops = calculaLU(A)
+    if L is None or U is None:
+        return None
+    L_inv = np.eye(len(L))
+    for i in range(len(L[0])):
+        piv = L[i][i]
+        for j in range(i+1,len(L)):
+            l = L[j][i]/piv
+            L[j][:i+1] -= L[i][:i+1]*l
+            L_inv[j][:i+1] -= L_inv[i][:i+1]*l
+
+    U_inv = np.eye(len(U))
+    for i in range(len(U[0])-1,-1,-1):
+        if U[i][i] != 1:
+            U_inv[i] = U_inv[i]/U[i][i]
+            U[i] = U[i]/U[i][i]
+        piv = U[i][i]
+        for j in range(i):
+            u = U[j][i]/piv
+            U[j][i:] -= U[i][i:]*u
+            U_inv[j][i:] -= U_inv[i][i:]*u
+
+    
+    return multiplicarMatrices(U_inv,L_inv)
+
+def traspuesta(A):
+    f,c = A.shape
+    T = np.zeros((c,f))
+    i = 0
+    while i < f:
+        T[i:,:] = A[:,i]
+        i+=1
+    return T
+
+def calculaLDV(A): #mision cumplida
+    L,U,nops = calculaLU(A)
+    if L is None or U is None:
+        return None
+    U = traspuesta(U)
+    V,D, nops = calculaLU(U)
+    V = traspuesta(V)
+
+    return L,D,V
+
+def esSimetrica(A,error):
+    f,c = A.shape
+    if f == c:
+        T = traspuesta(A)
+        simetrica = True
+        i = 0
+        while simetrica and i < f:
+            for j in range(c):
+                simetrica = np.isclose(A[i,j], T[i,j],atol=error)
+            i += 1
+        
+        return simetrica
+
+def esSDP(A, atol=1e-8):
+    if not esSimetrica(A,atol):
+        return False
+    if calculaLDV(A) is None:
+        return False
+    L,D,V = calculaLDV(A)
+    diag_pos = True
+    for i in range(len(D)):
+        diag_pos = diag_pos and D[i][i] > 0
+    return diag_pos
+
+
+def calculaCholesky(A,atol=1e-10): #mision cumplida
+    if not esSDP(A,atol):
+        return None
+    L,D,V = calculaLDV(A)
+
+    for i in range(len(D)):
+        D[i][i] = np.sqrt(D[i][i])
+
+    R = multiplicarMatrices(L,D)
+    return R
+
 # TESTS L04-LU
 
 # TESTS LU
@@ -166,7 +249,7 @@ b = np.array([1,0,1])
 assert(np.allclose(res_tri(A,b,inferior=False),np.array([1,1,1])))
 print("-----ÉXITO!!!!\n")
 
-'''
+
 # Test inversa
 print("TESTS inversa")
 
@@ -249,4 +332,4 @@ assert(esSDP(A,1e-3))
 
 print("-----ÉXITO!!!!\n")
 print("---FINALIZADO LABO 4!---")
-'''
+
