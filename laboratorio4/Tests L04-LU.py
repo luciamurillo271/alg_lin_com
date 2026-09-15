@@ -1,6 +1,88 @@
-from moduloALC import calculaLU, res_tri, inversa, calculaLDV, esSDP
+#from moduloALC import calculaLU, res_tri, inversa, calculaLDV, esSDP
 import numpy as np
 
+def multiplicarMatrices(A,B):
+    res = np.zeros((len(A),len(B[0])))
+    for f in range(len(A)):
+        for c in range(len(B[0])):
+            sum = 0
+            for fb in range(len(B)):
+                sum += A[f][fb]*B[fb][c]
+            res[f][c] = sum
+
+    return res
+
+def calculaLU(A):
+    cant_op = 0
+
+    if A is None:
+        return None, None, cant_op
+    m, n = A.shape
+    Ac = A.copy().astype(float)
+    
+    if m!=n:
+        return None,None,cant_op
+
+    for col in range(n):
+        pivo = Ac[col][col]
+        if abs(pivo) < 1e-15:
+            return None, None, 0
+
+        for fil in range(col+1,m):
+            if Ac[fil][col] != 0:
+                Ac[fil][col] = Ac[fil][col]/pivo
+                cant_op +=1
+
+                Ac[fil][col+1:] -= Ac[col][col+1:]*(Ac[fil][col])
+
+        cant_op += 2*((n - col-1)**2)
+
+    L = np.eye(n)
+    U = np.zeros((m,n))
+    for f in range(m):
+        for c in range(n):
+            if f > c:
+                L[f][c] = Ac[f][c]
+            else:
+                U[f][c] = Ac[f][c]
+    
+    return L, U, cant_op
+
+
+def es_inferior(A):
+    inferior = True
+    for i in range(len(A)):
+        for j in range(i+1,len(A[0])):
+            inferior = inferior and A[i][j] == 0
+    return inferior
+
+
+def res_tri(L,b,inferior=True):
+    x = np.zeros(len(L))
+    for i in range(len(L)):
+        sum = 0
+        for j in range(i):
+            sum += L[i][j]*x[j]
+        x[i] = (b[i] - sum)/L[i][i]
+        
+    return x
+
+def res_tri2(L,b,inferior=True):
+    x = np.zeros(len(L))
+    if not inferior:
+        for i in range(len(L)-1,-1,-1):
+            sum = 0
+            for j in range(len(L)-1,i,-1):
+                sum += L[i][j]*x[j]
+            x[i] = (b[i] - sum)/L[i][i]
+        return x
+    for i in range(len(L)):
+        sum = 0
+        for j in range(i):
+            sum += L[i][j]*x[j]
+        x[i] = (b[i] - sum)/L[i][i]
+        
+    return x
 # TESTS L04-LU
 
 # TESTS LU
@@ -84,7 +166,7 @@ b = np.array([1,0,1])
 assert(np.allclose(res_tri(A,b,inferior=False),np.array([1,1,1])))
 print("-----ÉXITO!!!!\n")
 
-
+'''
 # Test inversa
 print("TESTS inversa")
 
@@ -167,4 +249,4 @@ assert(esSDP(A,1e-3))
 
 print("-----ÉXITO!!!!\n")
 print("---FINALIZADO LABO 4!---")
-
+'''

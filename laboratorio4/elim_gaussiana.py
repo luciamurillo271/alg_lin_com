@@ -13,14 +13,28 @@ def elim_gaussiana(A):
     
     if m!=n:
         print('Matriz no cuadrada')
-        return
+        return None, None, 0
     
     ## desde aqui -- CODIGO A COMPLETAR
+    for col in range(n -1):
+        pivo = Ac[col][col]
+        for fil in range(col +1,m):
+            l = Ac[fil][col]/pivo
+            Ac[fil] = Ac[fil] - Ac[col]*l
+            Ac[fil][col] = l
+            cant_op += n+1
 
 
+    L = np.zeros((m,n))
+    for c in range(n):
+        L[c][c] = 1
+        for f in range(c,m):
+            L[f][c] = Ac[f][c]
 
-
-
+    U = np.zeros((m,n))
+    for c in range(n):
+        for f in range(c):
+            U[f][c] = Ac[f][c]
                 
     ## hasta aqui, calculando L, U y la cantidad de operaciones sobre 
     ## la matriz Ac
