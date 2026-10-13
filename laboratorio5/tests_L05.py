@@ -1,5 +1,79 @@
+def multiplicarMatrices(A,B):
+    res = np.zeros((len(A),len(B[0])))
+    for f in range(len(A)):
+        for c in range(len(B[0])):
+            sum = 0
+            for fb in range(len(B)):
+                sum += A[f][fb]*B[fb][c]
+            res[f][c] = sum
+
+    return res
+
+def traspuesta(A):
+    f,c = A.shape
+    T = np.zeros((c,f))
+    i = 0
+    while i < f:
+        T[i:,:] = A[:,i]
+        i+=1
+    return T
+
+def norma(x,p):
+    norm = 0
+    if p == "inf":
+        for elem in x:
+            if abs(elem) > norm:
+                norm = abs(elem)
+    else:
+        suma = 0
+        for elem in x:
+            suma += abs(elem)**p
+            norm = suma**(1/p)
+    return norm
+
+def producto_interno(x, y):
+    if len(x) != len(y):
+        return None
+    prod = 0
+    for i in range(len(x)):
+        prod += x[i]*y[i]
+    return prod
+
+def inversa(A):
+    inv_A = np.eye(len(A))
+    if len(A) != len(A[0]):
+        return None
+    for c in range(len(A)):
+        for f in range(c + 1, len(A)):
+            m = A[f][c]/A[c][c]
+
 ### Funciones L05-QR
+def Gram_Schmidt(col_A):
+    Q = col_A.copy()
+
+    for i in range(len(col_A)):
+        for j in range(i):
+            Q[i] -= (producto_interno(Q[i],Q[j])/norma(Q[j],2))*Q[j]
+
+    for i in range(len(Q)):
+        Q[i] = Q[i]/norma(Q[i],2)
+
+    return Q
+
 def QR_con_GS(A,tol=1e-12,retorna_nops=False):
+    if len(A) != len(A[0]):
+        return None
+    
+    columnas_A = traspuesta(A)
+    Q = Gram_Schmidt(columnas_A)
+
+    R = np.zeros((len(A),len(A)))
+
+    R[0][0] = norma(columnas_A[0], 2)
+    for c in range(len(R)):
+        for f in range(len(R)):
+            R
+
     """
     A una matriz de n x n 
     tol la tolerancia con la que se filtran elementos nulos en R
