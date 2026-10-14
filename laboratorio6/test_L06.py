@@ -30,15 +30,15 @@ def traspuesta(A):
         i+=1
     return T
 
-def esSimetrica(A):
-    if len(A) == len(A[0]):
-        f,c = A.shape
+def esSimetrica(A,error):
+    f,c = A.shape
+    if f == c:
         T = traspuesta(A)
         simetrica = True
         i = 0
         while simetrica and i < f:
             for j in range(c):
-                simetrica = A[i,j] == T[i,j]
+                simetrica = np.isclose(A[i,j], T[i,j],atol=error)
             i += 1
         
         return simetrica
@@ -96,7 +96,7 @@ def f_A(A, v, k):
             w = w/norma(w, 2)
     return w
 
-def metpot2k(A,tol=1e-8,K=1000):
+def metpot2k(A,tol=1e-15,K=1000):
     v = np.random.randn(len(A))
     v_m = f_A(A,v,2)
     e = producto_interno(v_m, v)
@@ -112,7 +112,7 @@ def metpot2k(A,tol=1e-8,K=1000):
     return v_m, lamda, k
 
 def diagRH(A,tol=1e-15,K=1e5):
-    if not esSimetrica(A):
+    if not esSimetrica(A, tol):
         return None
     v, lamda, error = metpot2k(A, tol, K)
     I = np.eye(len(A))
@@ -134,11 +134,11 @@ def diagRH(A,tol=1e-15,K=1e5):
         S = multiplicarMatrices(H, S1)    
     return S, D
 
-#%%
-
+#%%--------------------------------------------------------------
+#ejercicio 2
 import matplotlib.pyplot as plt
 
-def ej_metpot2k(A,tol=1e-8,K=1000):
+def ej_metpot2k(A,tol=1e-15,K=1000):
     v = np.random.randn(len(A))
     v_m = f_A(A,v,2)
     e = producto_interno(v_m, v)
@@ -173,7 +173,7 @@ plt.ylabel(r"$|\lambda - \lambda_k|$")
 plt.grid(True, which="both", alpha=0.3)
 plt.show()
 
-#%%
+#%%-----------------------------------------------------------------------------
 #### TESTEOS
 # Tests metpot2k
 
