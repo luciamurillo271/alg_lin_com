@@ -23,8 +23,7 @@ def normaliza(X,p):
     return normas
 
 def normaMatMC(A,q,p,Np):
-    angulos = np.linspace(0,2*np.pi,Np)
-    vectores = np.array([[np.cos(a),np.sin(a)] for a in angulos])
+    vectores = np.array([np.random.uniform(-1,1,size=len(A[0])) for n in range(Np)])
     normalizados = normaliza(vectores,p)
     max = []
     norm = 0
