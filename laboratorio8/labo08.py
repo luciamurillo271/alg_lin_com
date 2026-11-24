@@ -149,5 +149,41 @@ def svd_reducida(A,k="max",tol=1e-15):
         hat_V = B
     return hat_U, hat_Sig, hat_V
         
-        
+def Gram_Schmidt(v1, v2):
+    v2 = v2 - (producto_interno(v1, v2)/norma(v1, 2)**2) * v1
+    return v2
 
+def svd_completa(A,tol=1e-15):
+    m, n = A.shape
+    S, D = diagRH(multiplicarMatrices(traspuesta(A),A), tol)
+    
+    E = np.zeros((m,n))
+    for i in range(len(D)):
+        E[i,i] = D[i,i]**(1/2)
+    
+    S_tras = traspuesta(S)
+    q1 = S_tras[i]
+    q1 = q1 / norma(q1, 2)
+    for i in range(len(S_tras)):
+        v = S_tras[i]
+        for j in range(i):
+            v = Gram_Schmidt(S_tras[j], v)
+        
+        S_tras[i] = v/norma(v, 2)
+
+    V = S_tras
+
+    U = np.eye(m)
+    i = 0
+    while i < len(E[0]) or E[i][i] > tol:
+        u = multiplicarAx(A, V[i])*(1/E[i,i])
+        U[i] = u
+        i += 1
+
+    if i < len(U):
+        while i < len(U):
+            for j in range(i):
+                U[i] = Gram_Schmidt(U[j], U[i])
+            i += 1
+            U[i] = U[i]/norma(U[i], 2)
+    return U, E, V
